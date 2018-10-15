@@ -27,7 +27,7 @@ public class Employee {
         this.age = age;
     }
 
-    public Employee() {
+    public Employee(String string, int age, double v) {
     }
 
     public Employee(Integer age) {

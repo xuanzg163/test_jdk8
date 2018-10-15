@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.io.PrintStream;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Stream;
 
 /**
  * 学习使用Lambda表达式
@@ -220,7 +221,7 @@ public class Lambda {
 
     @Test
     public void test12(){
-        Employee emp = new Employee();
+        Employee emp = new Employee("张三", 18, 3333.33);
         emp.setName("王二");
         emp.setAge(11);
         Supplier<String> sup = () -> emp.getName();
@@ -260,12 +261,12 @@ public class Lambda {
      */
     @Test
     public void test15(){
-        Supplier<Employee> sup = () -> new Employee();
+        Supplier<Employee> sup = () -> new Employee("张三", 18, 3333.33);
         Employee emp = sup.get();
         System.out.println(emp);
 
         // 构造器引用方式
-        Supplier<Employee> sup1 = Employee::new;
+        Supplier<Employee> sup1 = () -> new Employee("张三", 18, 3333.33);
         Employee emp1 = sup.get();
         System.out.println(emp1);
     }
@@ -303,6 +304,117 @@ public class Lambda {
         Function<Integer, String[]> func2 = String[]::new;
         String strs2[] = func2.apply(20);
         System.out.println(strs2.length);
+    }
+
+    /**
+     * Lambda遍历数组
+     */
+    @Test
+    public void test18(){
+
+
+        String[] atp = {"Rafael Nadal", "Novak Djokovic",
+                "Stanislas Wawrinka",
+                "David Ferrer","Roger Federer",
+                "Andy Murray","Tomas Berdych",
+                "Juan Martin Del Potro"};
+        List<String> players =  Arrays.asList(atp);
+
+    // 以前的循环方式
+        for (String player : players) {
+            System.out.print(player + "; ");
+        }
+
+        players.forEach(t -> System.out.println(t+";"));
+        System.out.println("-------------");
+
+        players.forEach(System.out::println);
+
+    }
+
+    /**
+     * StreamAPI
+     *  数据渠道，用于操作数据源
+     */
+
+    /**
+     *  创建Stream
+     */
+    @Test
+    public void test19(){
+        //// 1、 可以通过 Conllection 系列集合提供的顺序流 stream()
+        // 或并行流 parallelStream()
+        List<String> list = new ArrayList<>();
+        Stream<String> stream = list.stream();
+        stream = list.parallelStream();
+
+        //2、 通过 Arrays 中的静态方法 stream()获取数据流
+        Integer integer[] = new Integer[10];
+        Stream<Integer> stream1 = Arrays.stream(integer);
+
+        //3、 通过 Stream 类中的静态方法 of()
+        Stream<String> stream2 = Stream.of("aa","bb","cc");
+        stream2.limit(3).forEach(System.out::println);
+        System.out.println("--------");
+
+        String str[] = new String[10];
+        Stream<String> stream3 = Stream.of(str);
+        stream3.limit(10).forEach(System.out::println);
+
+        //4、 创建无限流-迭代
+        System.out.println("xxxxxxxxxxxx");
+        Stream<Integer>  stream4 = Stream.iterate(0,x -> x+2);
+        stream4.limit(10).forEach(System.out::println);
+
+        System.out.println("++++++++++++");
+        // 5、 创建无限流-生成
+        Stream.generate(() -> Math.random())
+                .limit(5).forEach(System.out::println);
+
+    }
+
+    /**
+     * Stream的中间操作
+     * 筛选和切片
+     */
+    @Test
+    public void test20(){
+    List<Employee> emps = Arrays.asList(
+            new Employee(18, "张三"),
+            new Employee(38, "李四"),
+            new Employee(50, "王五"),
+            new Employee(16, "赵六"),
+            new Employee(28, "田七")
+    );
+        /**
+         * filter
+         * filter接收Lambda，从流中排除某些元素
+         */
+       Stream<Employee> stream = emps.stream()
+               .filter((employee) -> {
+                   return employee.getAge()>35;
+               });
+
+       //终止操作：一次性执行全部内容，即“惰性求值”
+       stream.forEach(System.out::println);//打印大于35的对象
+        System.out.println("----------------");
+
+        // limit-截断流， 使其元素不超过给定数量
+        emps.stream().filter(e -> e.getAge() >18).limit(2).forEach(System.out::println);
+
+        System.out.println("===========");
+        // skip-跳过元素， 返回一个扔掉了前 n 个元素的流， 若流中元素不足 n 个， 则
+//        返回一个空流。
+        emps.stream().filter(e -> e.getAge() >15).skip(2).forEach(System.out::println);
+    }
+
+    /**
+     *
+     */
+    @Test
+    public void test21(){
+
+
     }
 
 }
