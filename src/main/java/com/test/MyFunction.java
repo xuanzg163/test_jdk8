@@ -1,7 +1,7 @@
 package com.test;
 
 /**
- * @auther zhangxuan
+ * @author zhangxuan
  * @date 2018/10/12
  * @time 20:31
  */

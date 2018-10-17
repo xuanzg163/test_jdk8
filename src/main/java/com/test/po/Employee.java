@@ -1,15 +1,10 @@
 package com.test.po;
 
-/**
- * @auther zhangxuan
- * @date 2018/10/12
- * @time 23:24
- */
-
 public class Employee {
 
     private String name;
     private Integer age;
+    private Double saler;
 
     public String getName() {
         return name;
@@ -27,7 +22,10 @@ public class Employee {
         this.age = age;
     }
 
-    public Employee(String string, int age, double v) {
+    public Employee(String name, int age, double saler) {
+        this.age = age;
+        this.name = name;
+        this.saler = saler;
     }
 
     public Employee(Integer age) {
@@ -37,6 +35,9 @@ public class Employee {
     public Employee( Integer age,String name) {
         this.age = age;
         this.name = name;
+    }
+
+    public Employee() {
     }
 
     @Override

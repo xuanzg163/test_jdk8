@@ -6,12 +6,13 @@ import org.junit.Test;
 import java.io.PrintStream;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * 学习使用Lambda表达式
  *
- * @auther zhangxuan
+ * @author zhangxuan
  * @date 2018/10/12
  * @time 19:25
  */
@@ -383,7 +384,7 @@ public class Lambda {
             new Employee(18, "张三"),
             new Employee(38, "李四"),
             new Employee(50, "王五"),
-            new Employee(16, "赵六"),
+            new Employee(18, "赵六"),
             new Employee(28, "田七")
     );
         /**
@@ -406,15 +407,135 @@ public class Lambda {
         // skip-跳过元素， 返回一个扔掉了前 n 个元素的流， 若流中元素不足 n 个， 则
 //        返回一个空流。
         emps.stream().filter(e -> e.getAge() >15).skip(2).forEach(System.out::println);
+
+        System.out.println("+++++++++++++");
+
+        // distinct-筛选， 通过流所生产元素的 hashCode()和 equals()去除重复元素
+        // 筛选，过滤指定内容
+        emps.stream().filter(e->e.getAge() >18).distinct().forEach(System.out::println);
+
+        System.out.println("XXXXXXXXXXXXXXXXXXXX");
+
+        //接收一盒函数作为参数，改函数会被应用到每个元素上，并将其映射成一个新的元素
+        emps.stream().map(Employee::getName).forEach(System.out::println);
     }
 
     /**
+     *  映射 MAP
+     *  map-接收 Lambda， 将元素转换成其他形式或提取信息。
+     *  接收一个函数作为参数，
+     *  该函数会被应用到每个元素上，
+     *  并将其映射成一个新的元素。
      *
      */
     @Test
     public void test21(){
+        List<String> list = Arrays.asList("aa","bb","cc","dd");
 
+        list.stream().map(str-> str.toUpperCase()).forEach(System.out::println);
+
+        System.out.println(")))))))))))))))))))))))");
 
     }
+
+
+    /**
+     *  自然排序
+     *  sorted（Comparable）
+     *  数字，大写字母，字符，小写字母，
+     */
+    @Test
+    public void test22() {
+        List<String> list = Arrays.asList("cc", "aa", "BB", "ee", "dd","11","@");
+
+        list.stream().sorted()
+                .forEach(System.out::println);
+    }
+
+    /**
+     * 定制排序
+     * sorted（Comparator）
+     */
+    @Test
+    public void test23() {
+        List<Employee> emps = Arrays.asList(
+                new Employee(18, "张三"),
+                new Employee(38, "李四"),
+                new Employee(50, "王五"),
+                new Employee(16, "赵六"),
+                new Employee(28, "田七")
+        );
+
+        emps.stream().sorted((e1,e2)->{
+            if (e1.getAge().equals(e2.getAge())){
+                return e1.getName().compareTo(e1.getName());
+            } else {
+                return e1.getAge().compareTo(e2.getAge());
+            }
+        }).forEach(System.out::println);
+
+        System.out.println();
+        // 需求： 计算所有员工的年龄总和
+        Optional<Integer> op = emps.stream()
+                .map(Employee::getAge)
+                .reduce(Integer::sum);
+        System.out.println(op.get());
+    }
+
+
+    /**
+     *
+     * 归约
+     */
+    @Test
+    public void test24() {
+
+        List<Integer> list = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+        Integer sum = list.stream()
+                .reduce(0, (x, y) -> x + y);// 0 代表数字 0， 不是下标
+        System.out.println(sum);
+        System.out.println("-----------------------------");
+
+    }
+
+    /**
+     * // 收集-将流转换为其他形式， 接收一个 Collertor 接口的实现， 用于给 Stream 中元素做汇总
+     * 的方法
+     */
+    @Test
+    public void test25(){
+
+        List<Employee> emps = Arrays.asList(
+                new Employee(18, "张三"),
+                new Employee(38, "李四"),
+                new Employee(50, "王五"),
+                new Employee(18, "赵六"),
+                new Employee(28, "田七")
+        );
+
+        List<String> list = emps.stream().map(Employee::getName)
+                .collect(Collectors.toList());
+        list.forEach(System.out::println);
+        System.out.println("----");
+//        emps.forEach(System.out::println);
+
+        //set  把流中的所有元素收集到set中，删除重复项
+        Set<Integer> set = emps.stream().map(Employee::getAge)
+                .collect(Collectors.toSet());
+        set.forEach(System.out::println);
+
+        System.out.println("**********************");
+
+        // Map-把流中所有元素收集到 Map 中， 当出现相同的 key 时会抛异常
+        Map<String,Integer> map = emps.stream()
+                .collect(Collectors.toMap(Employee::getName,Employee::getAge));
+        System.out.println(map);
+
+        //员工人数
+        Long collect = emps.stream().collect(Collectors.counting());
+        System.out.println(collect);
+        
+    }
+
 
 }
