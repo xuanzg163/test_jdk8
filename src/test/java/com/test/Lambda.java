@@ -32,7 +32,6 @@ public class Lambda {
          * 2
          * 类实现多线程继承并重写runnable run方法
          */
-
         Runnable runnable = new Runnable() {
 
             @Override
